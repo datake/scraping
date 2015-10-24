@@ -2,9 +2,9 @@ require 'selenium-webdriver'
 require 'csv'
 
 language="fr" #ja
+input_filename="input/english_words.csv";
+output_filename="output/en_fr_from_google_trans.csv";
 
-input_filename="english_words.csv";
-output_filename="en_fr_from_google_trans.csv";
 i=0
 wait = Selenium::WebDriver::Wait.new(:timeout => 10)
 enwords = CSV.read(input_filename)#array
