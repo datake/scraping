@@ -13,12 +13,13 @@ su:スンダ
 
 =end
 
-input_filename="input/inds.csv"
-output_filename="output/id_jw_from_api.csv"
+
 i=0
 mytoken="AIzaSyBwE3CH2GCKAWnxT1xXoTjrk-p20EW5Tlw"
 language_from="id"
 language_to="jw"
+input_filename="input/inds.csv"
+output_filename="output/"+language_from+"_"+language_to+"_from_api.csv"
 start_from_this_line = 4444
 
 enwords = CSV.read(input_filename)#array
