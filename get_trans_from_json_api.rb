@@ -8,14 +8,19 @@ require 'csv'
 https://www.googleapis.com/language/translate/v2?key=【ここに自分のkeyを記述】&target=【翻訳前言語】&q=【検索文字列】&source=【翻訳後言語】
 id:インドネシア
 ms:マレー
+jw:ジャワ
+su:スンダ
+
 =end
 
-input_filename="input/inds.csv";
-output_filename="output/id_ms_from_api.csv";
+input_filename="input/inds.csv"
+output_filename="output/id_jw_from_api.csv"
 i=0
-mytoken="AIzaSyBwE3CH2GCKAWnxT1xXoTjrk-p20EW5Tlw";
-language_from="id";
-language_to="ms";
+mytoken="AIzaSyBwE3CH2GCKAWnxT1xXoTjrk-p20EW5Tlw"
+language_from="id"
+language_to="jw"
+start_from_this_line = 4444
+
 enwords = CSV.read(input_filename)#array
 
 
@@ -49,15 +54,27 @@ end
 File.open(output_filename, "w") do |io|
   enwords.each{|word|
 
-    url = "https://www.googleapis.com/language/translate/v2?key=" + mytoken + "&target=" +
-            language_to + "&source=" + language_from + "&q=" + word[0];
-            p "getting "+url+" .."
-            p i
-            i+=1
+    if i< start_from_this_line
+      i+=1
+      next
+    else
+      begin
+        url = "https://www.googleapis.com/language/translate/v2?key=" + mytoken + "&target=" +
+                language_to + "&source=" + language_from + "&q=" + word[0];
+                p "getting "+url+" .."
+                p i
+                i+=1
 
-    #puts get_json(url)#{"data"=>{"translations"=>[{"translatedText"=>"abad"}]}}
-    if get_json(url)["data"]["translations"][0]["translatedText"]
-        io.puts(word[0]+","+get_json(url)["data"]["translations"][0]["translatedText"])
+        #puts get_json(url)#{"data"=>{"translations"=>[{"translatedText"=>"abad"}]}}
+        if get_json(url)["data"]["translations"][0]["translatedText"]
+            io.puts(word[0]+","+get_json(url)["data"]["translations"][0]["translatedText"])
+        end
+        #sleep(0.2)
+      rescue => error
+        puts error.message
+        next
+      end
     end
+
   }
 end
