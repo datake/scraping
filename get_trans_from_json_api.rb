@@ -11,17 +11,25 @@ ms:マレー
 jw:ジャワ
 su:スンダ
 
+en:英語
+ja:日本語
+de:ドイツ語
+fr:フランス
+
 =end
 
 
-i=0
-mytoken="AIzaSyBwE3CH2GCKAWnxT1xXoTjrk-p20EW5Tlw"
+#ここを変更する
 language_from="id"
-language_to="jw"
+language_to="su"
 input_filename="input/inds.csv"
 output_filename="output/"+language_from+"_"+language_to+"_from_api.csv"
-start_from_this_line = 4444
+error_log_filename="output/"+language_from+"_"+language_to+"_from_api.log"
+start_from_this_line = 0
+#ここまで
 
+i=0
+mytoken="AIzaSyBwE3CH2GCKAWnxT1xXoTjrk-p20EW5Tlw"
 enwords = CSV.read(input_filename)#array
 
 
@@ -52,30 +60,33 @@ def get_json(location, limit = 10)
   end
 end
 
-File.open(output_filename, "w") do |io|
-  enwords.each{|word|
+File.open(error_log_filename, "w") do |errorlog|
+  File.open(output_filename, "w") do |io|
+    enwords.each{|word|
 
-    if i< start_from_this_line
-      i+=1
-      next
-    else
-      begin
-        url = "https://www.googleapis.com/language/translate/v2?key=" + mytoken + "&target=" +
-                language_to + "&source=" + language_from + "&q=" + word[0];
-                p "getting "+url+" .."
-                p i
-                i+=1
-
-        #puts get_json(url)#{"data"=>{"translations"=>[{"translatedText"=>"abad"}]}}
-        if get_json(url)["data"]["translations"][0]["translatedText"]
-            io.puts(word[0]+","+get_json(url)["data"]["translations"][0]["translatedText"])
-        end
-        #sleep(0.2)
-      rescue => error
-        puts error.message
+      if i< start_from_this_line
+        i+=1
         next
-      end
-    end
+      else
+        begin
+          url = "https://www.googleapis.com/language/translate/v2?key=" + mytoken + "&target=" +
+                  language_to + "&source=" + language_from + "&q=" + word[0];
+                  p "getting "+url+" .."
+                  p i
+                  i+=1
 
-  }
+          #puts get_json(url)#{"data"=>{"translations"=>[{"translatedText"=>"abad"}]}}
+          if get_json(url)["data"]["translations"][0]["translatedText"]
+              io.puts(word[0]+","+get_json(url)["data"]["translations"][0]["translatedText"])
+          end
+          #sleep(0.2)
+        rescue => error
+          errorlog.puts "getting "+url+" .."
+          errorlog.puts i
+          errorlog.puts error.message
+          next
+        end
+      end
+    }
+  end
 end
