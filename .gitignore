@@ -1,2 +1,4 @@
 output/
-
+output_indonesia/
+*.log
+*.csv
