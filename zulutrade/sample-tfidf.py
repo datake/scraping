@@ -27,6 +27,7 @@ sum = 0
 for i in range(num):
     wordList.append(result[i].split()[:-1:2])    #wordListに分解された単語要素のみを格納
 
+print(wordList)
 for i in range(num):
     for word in wordList[i]:
         allCount[i] = wordCount.setdefault(word,0)
